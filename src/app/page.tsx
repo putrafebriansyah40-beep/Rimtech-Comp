@@ -7,7 +7,6 @@ import {
   Clock,
   MapPin,
   ChevronRight,
-  Sparkles,
   CheckCircle2,
   HardDrive,
   Cpu,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { Repair3DVisual } from "@/components/repair-3d-visual";
 import { STORE } from "@/lib/constants";
 import { config } from "@/lib/config";
 import { formatRupiah } from "@/lib/utils";
@@ -123,26 +123,6 @@ export default function HomePage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "3.5rem", alignItems: "center" }}>
             {/* Left Copy */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-              <div>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.375rem 0.875rem",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--primary-light)",
-                    color: "var(--primary-hover)",
-                    border: "1px solid var(--primary-border)",
-                    fontSize: "0.75rem",
-                    fontWeight: 600,
-                  }}
-                >
-                  <Sparkles style={{ width: "0.875rem", height: "0.875rem", color: "var(--primary)" }} />
-                  <span>Sistem Booking & Pelacakan Servis Laptop Modern</span>
-                </span>
-              </div>
-
               <h1
                 style={{
                   fontSize: "3rem",
@@ -207,86 +187,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Interactive Mock Card */}
-            <div>
-              <div
-                style={{
-                  backgroundColor: "var(--surface)",
-                  borderRadius: "var(--radius-2xl)",
-                  border: "1px solid var(--border)",
-                  padding: "1.75rem",
-                  boxShadow: "0 20px 30px -10px rgba(15, 23, 42, 0.1), 0 0 40px rgba(2, 132, 199, 0.12)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.25rem",
-                  maxWidth: "460px",
-                  margin: "0 auto",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "1rem", borderBottom: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <div className="brand-icon" style={{ width: "2.25rem", height: "2.25rem" }}>
-                      <Laptop style={{ width: "1.125rem", height: "1.125rem" }} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-primary)" }}>Contoh Tiket Servis</h4>
-                      <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>RMC-20261021-001</span>
-                    </div>
-                  </div>
-                  <span className="badge badge-blue">
-                    <span className="badge-dot" />
-                    <span>Sedang Diperbaiki</span>
-                  </span>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.75rem" }}>
-                  <div style={{ padding: "0.75rem 1rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                    <span style={{ color: "var(--text-muted)", display: "block" }}>Unit Laptop:</span>
-                    <strong style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "0.8125rem", display: "block", marginTop: "0.125rem" }}>
-                      Asus ROG Strix G15 (Keluhan: Overheat & Kipas Bising)
-                    </strong>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-                    <div style={{ padding: "0.625rem 0.75rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                      <span style={{ color: "var(--text-muted)", fontSize: "0.6875rem", display: "block" }}>DP Terbayar:</span>
-                      <strong style={{ color: "var(--success)", fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: "0.875rem" }}>
-                        {formatRupiah(config.dpAmount)}
-                      </strong>
-                    </div>
-                    <div style={{ padding: "0.625rem 0.75rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                      <span style={{ color: "var(--text-muted)", fontSize: "0.6875rem", display: "block" }}>Jadwal Antar:</span>
-                      <strong style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: "0.875rem" }}>10:00 WIB</strong>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      padding: "0.75rem 1rem",
-                      borderRadius: "var(--radius-md)",
-                      backgroundColor: "var(--success-light)",
-                      border: "1px solid var(--success-border)",
-                      color: "var(--success-hover)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                    }}
-                  >
-                    <CheckCircle2 style={{ width: "1rem", height: "1rem", color: "var(--success)", flexShrink: 0 }} />
-                    <span style={{ fontSize: "0.6875rem", lineHeight: 1.4 }}>
-                      Pembersihan pasta termal selesai, sedang pengujian performa beban.
-                    </span>
-                  </div>
-                </div>
-
-                <Link
-                  href="/lacak/RMC-20261021-001"
-                  className="btn btn-secondary btn-block"
-                  style={{ borderRadius: "var(--radius-md)", padding: "0.625rem", fontSize: "0.8125rem" }}
-                >
-                  Buka Contoh Halaman Tracking
-                </Link>
-              </div>
+            {/* Right Interactive 3D Visual */}
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Repair3DVisual />
             </div>
           </div>
         </div>
