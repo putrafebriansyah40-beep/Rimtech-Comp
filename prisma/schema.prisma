@@ -1,0 +1,195 @@
+// =====================================================================
+// Skema Basis Data - Website Booking Service Laptop RimTech Comp
+// Mengacu pada ERD & Data Dictionary (Dokumen SRS BAB 5)
+// =====================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------
+// ENUMS
+// ---------------------------------------------------------------------
+
+enum BookingStatus {
+  MENUNGGU_PEMBAYARAN
+  MENUNGGU_KONFIRMASI
+  DIKONFIRMASI
+  DITOLAK
+  DIBATALKAN
+  SELESAI
+}
+
+enum PaymentType {
+  DP_QRIS
+  PELUNASAN_OFFLINE
+}
+
+enum PaymentStatus {
+  PENDING
+  SETTLEMENT
+  EXPIRED
+  FAILED
+}
+
+enum ServiceStatus {
+  MENUNGGU_PENYERAHAN
+  SEDANG_DIDIAGNOSA
+  SEDANG_DIPERBAIKI
+  MENUNGGU_SPAREPART
+  SELESAI
+  DIAMBIL
+}
+
+enum WhatsappStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+// ---------------------------------------------------------------------
+// 5.1 users - akun pengelola toko (Admin / Teknisi)
+// ---------------------------------------------------------------------
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(100)
+  username     String   @unique @db.VarChar(50)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  role         String   @default("ADMIN") @db.VarChar(20)
+  phoneNumber  String?  @map("phone_number") @db.VarChar(20)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  serviceLogs ServiceStatusLog[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------
+// 5.2 customers - identitas pelanggan
+// ---------------------------------------------------------------------
+model Customer {
+  id             Int      @id @default(autoincrement())
+  fullName       String   @map("full_name") @db.VarChar(100)
+  whatsappNumber String   @map("whatsapp_number") @db.VarChar(20)
+  email          String?  @db.VarChar(100)
+  address        String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  bookings Booking[]
+
+  @@index([whatsappNumber])
+  @@map("customers")
+}
+
+// ---------------------------------------------------------------------
+// 5.3 daily_slots - kuota harian & kalender operasional toko
+// ---------------------------------------------------------------------
+model DailySlot {
+  id            Int      @id @default(autoincrement())
+  slotDate      DateTime @unique @map("slot_date") @db.Date
+  maxCapacity   Int      @default(5) @map("max_capacity")
+  currentBooked Int      @default(0) @map("current_booked")
+  isStoreOpen   Boolean  @default(true) @map("is_store_open")
+  notes         String?  @db.VarChar(255)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  bookings Booking[]
+
+  @@map("daily_slots")
+}
+
+// ---------------------------------------------------------------------
+// 5.4 bookings - data pemesanan servis laptop
+// ---------------------------------------------------------------------
+model Booking {
+  id               Int           @id @default(autoincrement())
+  bookingCode      String        @unique @map("booking_code") @db.VarChar(20)
+  customerId       Int           @map("customer_id")
+  slotId           Int           @map("slot_id")
+  laptopBrand      String        @map("laptop_brand") @db.VarChar(50)
+  laptopModel      String        @map("laptop_model") @db.VarChar(100)
+  issueDescription String        @map("issue_description") @db.Text
+  dropOffDate      DateTime      @map("drop_off_date") @db.Date
+  dropOffTime      DateTime      @map("drop_off_time") @db.Time(0)
+  bookingStatus    BookingStatus @default(MENUNGGU_PEMBAYARAN) @map("booking_status")
+  finalCost        Decimal?      @map("final_cost") @db.Decimal(12, 2)
+  remainingCost    Decimal?      @map("remaining_cost") @db.Decimal(12, 2)
+  rejectionReason  String?       @map("rejection_reason") @db.Text
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  customer     Customer           @relation(fields: [customerId], references: [id])
+  slot         DailySlot          @relation(fields: [slotId], references: [id])
+  payments     Payment[]
+  serviceLogs  ServiceStatusLog[]
+  whatsappLogs WhatsappLog[]
+
+  @@index([bookingStatus])
+  @@index([dropOffDate])
+  @@map("bookings")
+}
+
+// ---------------------------------------------------------------------
+// 5.5 payments - transaksi DP QRIS & pelunasan offline
+// ---------------------------------------------------------------------
+model Payment {
+  id              Int           @id @default(autoincrement())
+  bookingId       Int           @map("booking_id")
+  invoiceNumber   String        @unique @map("invoice_number") @db.VarChar(50)
+  paymentType     PaymentType   @map("payment_type")
+  amount          Decimal       @db.Decimal(12, 2)
+  paymentMethod   String        @map("payment_method") @db.VarChar(30)
+  paymentStatus   PaymentStatus @default(PENDING) @map("payment_status")
+  gatewayOrderId  String?       @map("gateway_order_id") @db.VarChar(100)
+  // Kolom pendukung tampilan QRIS (Class Diagram: qrisQrUrl) & batas waktu bayar
+  qrisString      String?       @map("qris_string") @db.Text
+  qrisUrl         String?       @map("qris_url") @db.VarChar(500)
+  expiresAt       DateTime?     @map("expires_at") @db.Timestamp(0)
+  transactionTime DateTime?     @map("transaction_time") @db.Timestamp(0)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([gatewayOrderId])
+  @@map("payments")
+}
+
+// ---------------------------------------------------------------------
+// 5.6 service_status_logs - riwayat progres perbaikan
+// ---------------------------------------------------------------------
+model ServiceStatusLog {
+  id           Int           @id @default(autoincrement())
+  bookingId    Int           @map("booking_id")
+  technicianId Int?          @map("technician_id")
+  status       ServiceStatus
+  notes        String?       @db.Text
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+
+  booking    Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  technician User?   @relation(fields: [technicianId], references: [id], onDelete: SetNull)
+
+  @@map("service_status_logs")
+}
+
+// ---------------------------------------------------------------------
+// 5.7 whatsapp_logs - log notifikasi WhatsApp otomatis
+// ---------------------------------------------------------------------
+model WhatsappLog {
+  id              Int            @id @default(autoincrement())
+  bookingId       Int            @map("booking_id")
+  recipientNumber String         @map("recipient_number") @db.VarChar(20)
+  messageType     String         @map("message_type") @db.VarChar(50)
+  messageBody     String         @map("message_body") @db.Text
+  status          WhatsappStatus @default(PENDING)
+  sentAt          DateTime?      @map("sent_at") @db.Timestamp(0)
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamp(0)
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("whatsapp_logs")
+}
