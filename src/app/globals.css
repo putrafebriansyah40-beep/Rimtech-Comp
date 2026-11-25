@@ -691,6 +691,210 @@ img, svg {
   to { transform: rotate(360deg); }
 }
 
+/* --------------------------------------------------------------------------
+   8. Living UI, Scrollytelling & Micro-Interactions (Ponytail & Scroll-Craft)
+   -------------------------------------------------------------------------- */
+
+/* Base & Interactive Cards */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-normal);
+  position: relative;
+  z-index: 2;
+}
+
+.card-interactive {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-border);
+  box-shadow: 0 16px 32px -8px rgba(2, 132, 199, 0.16), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+}
+
+.card-icon-zoom {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-interactive:hover .card-icon-zoom {
+  transform: scale(1.12);
+}
+
+.card-arrow-shift {
+  transition: transform 0.25s ease;
+}
+.card-interactive:hover .card-arrow-shift {
+  transform: translateX(5px);
+}
+
+/* Radar Pulse / Ping Dot (Live Status Indicator) */
+.ping-dot-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+}
+.ping-dot-core {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+}
+.ping-dot-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  opacity: 0.75;
+  animation: radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes radarPing {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  70%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* Shimmering Animated Progress Bar */
+.shimmer-progress-bar {
+  position: relative;
+  overflow: hidden;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background-color: #e2e8f0;
+}
+.shimmer-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, #0284c7 0%, #06b6d4 60%, #10b981 100%);
+  position: relative;
+  overflow: hidden;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.shimmer-progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%);
+  animation: shimmerSweep 2.2s infinite;
+}
+@keyframes shimmerSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Ambient Breathing Glow (Layered Hero Depth) */
+.ambient-glow-orb {
+  position: absolute;
+  border-radius: var(--radius-full);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.ambient-glow-1 {
+  width: 440px;
+  height: 440px;
+  top: -80px;
+  right: -60px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, rgba(6, 182, 212, 0.06) 50%, transparent 70%);
+  animation: orbBreathe 7s ease-in-out infinite alternate;
+}
+.ambient-glow-2 {
+  width: 360px;
+  height: 360px;
+  bottom: -40px;
+  left: -40px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(2, 132, 199, 0.05) 50%, transparent 70%);
+  animation: orbBreathe 9s ease-in-out infinite alternate-reverse;
+}
+@keyframes orbBreathe {
+  0% { transform: scale(0.92) translate(0, 0); opacity: 0.65; }
+  100% { transform: scale(1.12) translate(24px, 16px); opacity: 1; }
+}
+
+/* Workflow Scrolly Connector */
+.workflow-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .workflow-grid::before {
+    content: "";
+    position: absolute;
+    top: 3.25rem;
+    left: 8%;
+    right: 8%;
+    height: 2px;
+    background: linear-gradient(90deg, #bae6fd 0%, #0284c7 50%, #bae6fd 100%);
+    z-index: 1;
+    opacity: 0.45;
+    border-radius: 9999px;
+  }
+}
+
+/* FAQ Accordion Styling */
+.faq-item {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background-color: var(--surface-alt);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+.faq-item.active {
+  background-color: var(--surface);
+  border-color: var(--primary-border);
+  box-shadow: 0 4px 14px -2px rgba(2, 132, 199, 0.1);
+}
+.faq-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.faq-trigger:hover {
+  color: var(--primary);
+}
+.faq-chevron {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.faq-item.active .faq-chevron {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+.faq-body {
+  padding: 0 1.5rem 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Accessibility: Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Backdrop Blur */
 .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }

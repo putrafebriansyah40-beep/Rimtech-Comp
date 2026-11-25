@@ -1,13 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import {
-  Laptop,
   CalendarCheck,
   Wrench,
   Clock,
   MapPin,
   ChevronRight,
-  CheckCircle2,
   HardDrive,
   Cpu,
   Monitor,
@@ -15,9 +13,13 @@ import {
   Flame,
   ArrowRight,
   Phone,
+  Sparkles,
+  CheckCircle,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { HeroTicketCard } from "@/components/hero-ticket-card";
+import { FaqAccordion } from "@/components/faq-accordion";
 import { STORE } from "@/lib/constants";
 import { config } from "@/lib/config";
 import { formatRupiah } from "@/lib/utils";
@@ -108,20 +110,31 @@ export default function HomePage() {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "var(--bg-page)" }}>
       <Navbar />
 
-      {/* Hero Section */}
+      {/* Hero Section with Layered Depth & Ambient Glow */}
       <section
         style={{
           position: "relative",
           overflow: "hidden",
-          padding: "4.5rem 0 5.5rem",
-          background: "linear-gradient(180deg, rgba(224, 242, 254, 0.5) 0%, #ffffff 60%, #f8fafc 100%)",
+          padding: "5rem 0 6rem",
+          background: "linear-gradient(180deg, rgba(224, 242, 254, 0.55) 0%, #ffffff 60%, #f8fafc 100%)",
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <div className="container">
+        {/* Ambient Breathing Glow Orbs (Scroll-Craft Visual Depth) */}
+        <div className="ambient-glow-orb ambient-glow-1" />
+        <div className="ambient-glow-orb ambient-glow-2" />
+
+        <div className="container" style={{ position: "relative", zIndex: 2 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "3.5rem", alignItems: "center" }}>
             {/* Left Copy */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", width: "fit-content", padding: "0.375rem 0.875rem", borderRadius: "var(--radius-full)", backgroundColor: "var(--primary-light)", border: "1px solid var(--primary-border)" }}>
+                <Sparkles style={{ width: "0.875rem", height: "0.875rem", color: "var(--primary)" }} />
+                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--primary)", letterSpacing: "0.02em" }}>
+                  Sistem Servis Laptop Berjadwal Pasti
+                </span>
+              </div>
+
               <h1
                 style={{
                   fontSize: "3rem",
@@ -186,93 +199,16 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Interactive Mock Card */}
+            {/* Right Interactive Mock Card (Living UI) */}
             <div>
-              <div
-                style={{
-                  backgroundColor: "var(--surface)",
-                  borderRadius: "var(--radius-2xl)",
-                  border: "1px solid var(--border)",
-                  padding: "1.75rem",
-                  boxShadow: "0 20px 30px -10px rgba(15, 23, 42, 0.1), 0 0 40px rgba(2, 132, 199, 0.12)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.25rem",
-                  maxWidth: "460px",
-                  margin: "0 auto",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "1rem", borderBottom: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <div className="brand-icon" style={{ width: "2.25rem", height: "2.25rem" }}>
-                      <Laptop style={{ width: "1.125rem", height: "1.125rem" }} />
-                    </div>
-                    <div>
-                      <h4 style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-primary)" }}>Contoh Tiket Servis</h4>
-                      <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>RMC-20261021-001</span>
-                    </div>
-                  </div>
-                  <span className="badge badge-blue">
-                    <span className="badge-dot" />
-                    <span>Sedang Diperbaiki</span>
-                  </span>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.75rem" }}>
-                  <div style={{ padding: "0.75rem 1rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                    <span style={{ color: "var(--text-muted)", display: "block" }}>Unit Laptop:</span>
-                    <strong style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "0.8125rem", display: "block", marginTop: "0.125rem" }}>
-                      Asus ROG Strix G15 (Keluhan: Overheat & Kipas Bising)
-                    </strong>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-                    <div style={{ padding: "0.625rem 0.75rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                      <span style={{ color: "var(--text-muted)", fontSize: "0.6875rem", display: "block" }}>DP Terbayar:</span>
-                      <strong style={{ color: "var(--success)", fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: "0.875rem" }}>
-                        {formatRupiah(config.dpAmount)}
-                      </strong>
-                    </div>
-                    <div style={{ padding: "0.625rem 0.75rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                      <span style={{ color: "var(--text-muted)", fontSize: "0.6875rem", display: "block" }}>Jadwal Antar:</span>
-                      <strong style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: "0.875rem" }}>10:00 WIB</strong>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      padding: "0.75rem 1rem",
-                      borderRadius: "var(--radius-md)",
-                      backgroundColor: "var(--success-light)",
-                      border: "1px solid var(--success-border)",
-                      color: "var(--success-hover)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                    }}
-                  >
-                    <CheckCircle2 style={{ width: "1rem", height: "1rem", color: "var(--success)", flexShrink: 0 }} />
-                    <span style={{ fontSize: "0.6875rem", lineHeight: 1.4 }}>
-                      Pembersihan pasta termal selesai, sedang pengujian performa beban.
-                    </span>
-                  </div>
-                </div>
-
-                <Link
-                  href="/lacak/RMC-20261021-001"
-                  className="btn btn-secondary btn-block"
-                  style={{ borderRadius: "var(--radius-md)", padding: "0.625rem", fontSize: "0.8125rem" }}
-                >
-                  Buka Contoh Halaman Tracking
-                </Link>
-              </div>
+              <HeroTicketCard dpAmount={config.dpAmount} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4 Langkah Workflow */}
-      <section style={{ padding: "5rem 0", backgroundColor: "#ffffff" }}>
+      {/* 4 Langkah Workflow (Scrollytelling & Connected Steps) */}
+      <section style={{ padding: "5.5rem 0", backgroundColor: "#ffffff" }}>
         <div className="container">
           <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 3.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
@@ -287,7 +223,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
+          <div className="workflow-grid">
             {workflow.map((item) => (
               <div
                 key={item.step}
@@ -295,6 +231,7 @@ export default function HomePage() {
                 style={{ padding: "1.75rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}
               >
                 <div
+                  className="card-icon-zoom"
                   style={{
                     width: "3rem",
                     height: "3rem",
@@ -306,7 +243,7 @@ export default function HomePage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    boxShadow: "0 4px 10px rgba(2, 132, 199, 0.3)",
+                    boxShadow: "0 4px 12px rgba(2, 132, 199, 0.35)",
                   }}
                 >
                   {item.step}
@@ -322,7 +259,7 @@ export default function HomePage() {
       </section>
 
       {/* Katalog Layanan */}
-      <section id="layanan" style={{ padding: "5rem 0", backgroundColor: "var(--bg-page)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+      <section id="layanan" style={{ padding: "5.5rem 0", backgroundColor: "var(--bg-page)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
         <div className="container">
           <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 3.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
@@ -349,6 +286,7 @@ export default function HomePage() {
                   <div>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
                       <div
+                        className="card-icon-zoom"
                         style={{
                           width: "2.75rem",
                           height: "2.75rem",
@@ -375,7 +313,7 @@ export default function HomePage() {
                       style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--primary)", display: "inline-flex", alignItems: "center", gap: "0.375rem" }}
                     >
                       <span>Booking Layanan Ini</span>
-                      <ArrowRight style={{ width: "0.875rem", height: "0.875rem" }} />
+                      <ArrowRight className="card-arrow-shift" style={{ width: "0.875rem", height: "0.875rem" }} />
                     </Link>
                   </div>
                 </div>
@@ -385,11 +323,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ & Profil Toko */}
-      <section id="faq" style={{ padding: "5rem 0", backgroundColor: "#ffffff" }}>
+      {/* FAQ & Profil Toko (Interactive Accordion) */}
+      <section id="faq" style={{ padding: "5.5rem 0", backgroundColor: "#ffffff" }}>
         <div className="container">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "3.5rem" }}>
-            {/* FAQ List */}
+            {/* FAQ List with Client Accordion */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
               <div>
                 <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.1em" }}>FAQ</span>
@@ -398,14 +336,7 @@ export default function HomePage() {
                 </h2>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {faqs.map((faq, i) => (
-                  <div key={i} style={{ padding: "1.25rem 1.5rem", borderRadius: "var(--radius-lg)", backgroundColor: "var(--surface-alt)", border: "1px solid var(--border)" }}>
-                    <h4 style={{ fontWeight: 700, fontSize: "0.9375rem", color: "var(--text-primary)", marginBottom: "0.5rem" }}>{faq.q}</h4>
-                    <p style={{ fontSize: "0.8125rem", color: "var(--text-secondary)", lineHeight: 1.6 }}>{faq.a}</p>
-                  </div>
-                ))}
-              </div>
+              <FaqAccordion items={faqs} />
             </div>
 
             {/* Profil Mitra Card */}
@@ -420,6 +351,8 @@ export default function HomePage() {
                   display: "flex",
                   flexDirection: "column",
                   gap: "1.5rem",
+                  position: "sticky",
+                  top: "6rem",
                 }}
               >
                 <div>
