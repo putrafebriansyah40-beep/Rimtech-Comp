@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { PaymentView } from "@/components/payment-view";
 import { getBookingByCode } from "@/lib/services/booking";
 import { qrDataUrl } from "@/lib/services/payment";
-import { isPaymentSimulation } from "@/lib/config";
+import { config } from "@/lib/config";
 import { toNumber } from "@/lib/utils";
 
 export const metadata = {
@@ -51,7 +51,7 @@ export default async function BookingPaymentPage({
             qrDataUrlString={qrImage}
             qrisString={dpPayment?.qrisString ?? null}
             expiresAt={dpPayment?.expiresAt ? dpPayment.expiresAt.toISOString() : null}
-            isSimulation={isPaymentSimulation()}
+            isSimulation={!config.midtrans.isProduction}
             laptopName={`${booking.laptopBrand} ${booking.laptopModel}`}
           />
         </div>

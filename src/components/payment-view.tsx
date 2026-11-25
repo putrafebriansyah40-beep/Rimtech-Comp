@@ -151,8 +151,8 @@ export function PaymentView({
           <div className="flex items-center gap-2.5">
             <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
             <div className="text-xs">
-              <strong className="font-semibold block text-amber-950">Mode Simulasi Aktif</strong>
-              <span>Kunci Midtrans belum diisi di .env. Anda dapat langsung klik tombol simulasi di bawah.</span>
+              <strong className="font-semibold block text-amber-950">Mode Sandbox / Pengujian Aktif</strong>
+              <span>Anda dapat langsung menyelesaikan pembayaran dengan menekan tombol simulasi di bawah.</span>
             </div>
           </div>
           <button

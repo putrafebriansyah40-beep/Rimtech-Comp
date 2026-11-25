@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { isPaymentSimulation } from "@/lib/config";
+import { config } from "@/lib/config";
 import { prisma } from "@/lib/prisma";
 import { markPaymentSettled } from "@/lib/services/booking";
 
@@ -9,8 +9,9 @@ import { markPaymentSettled } from "@/lib/services/booking";
  * Mensimulasikan callback "settlement" dari Payment Gateway untuk keperluan demo.
  */
 export async function POST(req: Request) {
-  if (!isPaymentSimulation()) {
-    return NextResponse.json({ error: "Mode simulasi tidak aktif" }, { status: 403 });
+  // Hanya izinkan simulasi jika BUKAN mode production
+  if (config.midtrans.isProduction) {
+    return NextResponse.json({ error: "Mode simulasi dinonaktifkan pada Production" }, { status: 403 });
   }
   const parsed = z.object({ bookingCode: z.string().min(5) }).safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Data tidak valid" }, { status: 400 });
