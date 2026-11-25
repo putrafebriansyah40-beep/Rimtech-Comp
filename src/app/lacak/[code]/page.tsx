@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { getBookingByCode, dpPaidOf } from "@/lib/services/booking";
@@ -33,6 +34,12 @@ export default async function BookingDetailPage({
   params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
+
+  // Jika input di URL berupa nomor telepon, alihkan otomatis ke pencarian nomor WhatsApp
+  if (/^\+?[0-9\s-]+$/.test(code) && code.length >= 8 && !code.toUpperCase().startsWith("RMC-")) {
+    redirect(`/lacak?q=${encodeURIComponent(code)}`);
+  }
+
   const booking = await getBookingByCode(code);
 
   if (!booking) {

@@ -12,13 +12,17 @@ export function TrackingSearch({ initialQuery = "" }: { initialQuery?: string })
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    const clean = query.trim().toUpperCase();
+    const clean = query.trim();
     if (!clean) {
       toast.error("Masukkan kode booking atau nomor WhatsApp Anda");
       return;
     }
     setSearching(true);
-    router.push(`/lacak/${clean}`);
+    if (clean.toUpperCase().startsWith("RMC-")) {
+      router.push(`/lacak/${clean.toUpperCase()}`);
+    } else {
+      router.push(`/lacak?q=${encodeURIComponent(clean)}`);
+    }
   }
 
   return (
