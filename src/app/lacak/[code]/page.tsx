@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   AlertCircle,
   Receipt,
+  QrCode,
 } from "lucide-react";
 
 export async function generateMetadata({
@@ -136,6 +137,28 @@ export default async function BookingDetailPage({
                 </div>
               </div>
             </div>
+
+            {/* Pending Payment Alert & Resume Button */}
+            {booking.bookingStatus === "MENUNGGU_PEMBAYARAN" && (
+              <div className="p-4 sm:p-5 bg-amber-50 border-b border-amber-200 text-amber-950 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-bold text-sm text-amber-900 block">Uang Muka (DP) Belum Dibayar</strong>
+                    <span className="text-amber-800">
+                      Reservasi Anda sedang ditahan. Selesaikan pembayaran DP sebesar {formatRupiah(dpAmount)} via QRIS untuk mengamankan slot antrean.
+                    </span>
+                  </div>
+                </div>
+                <Link
+                  href={`/booking/${booking.bookingCode}/bayar`}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shrink-0 transition-colors shadow-sm"
+                >
+                  <QrCode className="w-4 h-4" />
+                  <span>Buka QR Code Pembayaran</span>
+                </Link>
+              </div>
+            )}
 
             {/* Rejection Alert if any */}
             {booking.bookingStatus === "DITOLAK" && (
