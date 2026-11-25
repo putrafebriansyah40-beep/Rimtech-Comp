@@ -116,6 +116,24 @@ export function verifySignature(n: MidtransNotification): boolean {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
+/** Memeriksa status transaksi langsung ke API Midtrans (berguna di localhost tanpa webhook) */
+export async function getMidtransTransactionStatus(orderId: string): Promise<MidtransNotification | null> {
+  if (isPaymentSimulation()) return null;
+  try {
+    const res = await fetch(`${baseUrl()}/v2/${orderId}/status`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: authHeader(),
+      },
+      signal: AbortSignal.timeout(6_000),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as MidtransNotification;
+  } catch {
+    return null;
+  }
+}
+
 /** Memetakan transaction_status Midtrans ke PaymentStatus internal */
 export function mapMidtransStatus(n: MidtransNotification) {
   switch (n.transaction_status) {

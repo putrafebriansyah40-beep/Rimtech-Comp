@@ -49,6 +49,7 @@ export default async function BookingPaymentPage({
             invoiceNumber={dpPayment?.invoiceNumber ?? "-"}
             amount={toNumber(dpPayment?.amount)}
             qrDataUrlString={qrImage}
+            qrisString={dpPayment?.qrisString ?? null}
             expiresAt={dpPayment?.expiresAt ? dpPayment.expiresAt.toISOString() : null}
             isSimulation={isPaymentSimulation()}
             laptopName={`${booking.laptopBrand} ${booking.laptopModel}`}

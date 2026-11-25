@@ -22,6 +22,7 @@ type PaymentProps = {
   invoiceNumber: string;
   amount: number;
   qrDataUrlString: string | null;
+  qrisString?: string | null;
   expiresAt: string | null;
   isSimulation: boolean;
   laptopName: string;
@@ -32,16 +33,26 @@ export function PaymentView({
   invoiceNumber,
   amount,
   qrDataUrlString,
+  qrisString,
   expiresAt,
   isSimulation,
   laptopName,
 }: PaymentProps) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
+  const [copiedQr, setCopiedQr] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string>("--:--");
   const [isExpired, setIsExpired] = useState(false);
   const [checking, setChecking] = useState(false);
   const [simulating, setSimulating] = useState(false);
+
+  function copyQrisText() {
+    if (!qrisString) return;
+    navigator.clipboard.writeText(qrisString);
+    setCopiedQr(true);
+    toast.success("Kode QRIS berhasil disalin!");
+    setTimeout(() => setCopiedQr(false), 2500);
+  }
 
   // Countdown timer
   useEffect(() => {
@@ -257,6 +268,37 @@ export function PaymentView({
                   Buka aplikasi mobile banking atau dompet digital Anda, pilih <strong>Scan QRIS</strong>, lalu
                   arahkan kamera ke kode di atas.
                 </p>
+
+                {/* Sandbox Helper (Agar tidak error unparsable saat scan layar) */}
+                {!isSimulation && qrisString && (
+                  <div className="mt-4 p-4 rounded-2xl bg-sky-50/90 border border-sky-200 text-left space-y-2.5 shadow-xs max-w-md mx-auto">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-sky-950 flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-sky-600" />
+                        <span>Pengujian Sandbox (Midtrans Simulator)</span>
+                      </span>
+                      <a
+                        href="https://simulator.sandbox.midtrans.com/qris/index"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] font-bold text-sky-600 hover:text-sky-800 underline"
+                      >
+                        Buka Simulator ↗
+                      </a>
+                    </div>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      Kamera laptop/webcam sering buram saat scan layar (menghasilkan <em>unparsable</em>). Anda dapat langsung menyalin kode QRIS di bawah lalu tempelkan ke kolom Simulator Midtrans:
+                    </p>
+                    <button
+                      type="button"
+                      onClick={copyQrisText}
+                      className="w-full py-2 px-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-sky-600" />
+                      <span>{copiedQr ? "Kode QRIS Berhasil Disalin!" : "Salin Kode QRIS String"}</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="p-8 text-center text-slate-400">
